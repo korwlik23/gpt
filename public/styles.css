@@ -1,0 +1,758 @@
+/* ============================================================
+   GPT Chatbot - CSS Design System
+   ============================================================
+   ระบบออกแบบหลักสำหรับแชทบอท AI สไตล์ ChatGPT
+   ============================================================ */
+
+/* --- CSS Custom Properties (ตัวแปร CSS) --- */
+:root {
+    /* สีหลัก */
+    --color-bg-primary: #0d0d0d;
+    --color-bg-secondary: #171717;
+    --color-bg-tertiary: #212121;
+    --color-bg-hover: #2a2a2a;
+    --color-bg-active: #343434;
+
+    /* สีข้อความ */
+    --color-text-primary: #ececec;
+    --color-text-secondary: #b4b4b4;
+    --color-text-tertiary: #8e8e8e;
+    --color-text-placeholder: #666666;
+
+    /* สีเน้น */
+    --color-accent-primary: #8b5cf6;
+    --color-accent-secondary: #06b6d4;
+    --color-accent-gradient: linear-gradient(135deg, #8b5cf6, #06b6d4);
+
+    /* สีขอบ */
+    --color-border: #2e2e2e;
+    --color-border-light: #3a3a3a;
+    --color-border-focus: #565656;
+
+    /* สีส่วน AI / ผู้ใช้ */
+    --color-msg-user-bg: #2a2a2a;
+    --color-msg-ai-bg: transparent;
+
+    /* Sidebar */
+    --sidebar-width: 280px;
+
+    /* ขนาดตัวอักษร */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.8125rem;
+    --font-size-base: 0.9375rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+
+    /* ระยะห่าง */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    /* มุมโค้ง */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* เงา */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+    /* ทรานสิชัน */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 350ms ease;
+}
+
+/* --- Reset & Base Styles (รีเซ็ตค่าพื้นฐาน) --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    line-height: 1.6;
+}
+
+/* --- Scrollbar Styles (แถบเลื่อน) --- */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-border-light);
+}
+
+/* ============================================================
+   Sidebar (แถบด้านข้าง)
+   ============================================================ */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--color-bg-secondary);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--color-border);
+    transition: transform var(--transition-normal), width var(--transition-normal);
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 0;
+    border-right: none;
+    overflow: hidden;
+}
+
+/* ส่วนหัว Sidebar */
+.sidebar-header {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.btn-new-chat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-accent-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    font-family: inherit;
+}
+.btn-new-chat:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+.btn-new-chat:active {
+    transform: translateY(0);
+}
+
+/* รายการบทสนทนา */
+.sidebar-conversations {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+}
+
+.conversation-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    margin-bottom: 2px;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.conversation-item:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+.conversation-item.active {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+.conversation-item .conv-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.conversation-item .btn-delete-conv {
+    background: none;
+    border: none;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+    flex-shrink: 0;
+}
+.conversation-item:hover .btn-delete-conv {
+    opacity: 1;
+}
+.conversation-item .btn-delete-conv:hover {
+    color: #ef4444;
+}
+
+/* ส่วนล่าง Sidebar */
+.sidebar-footer {
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+}
+.btn-clear-all {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: none;
+    color: var(--color-text-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    font-family: inherit;
+}
+.btn-clear-all:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+/* ============================================================
+   Main Content (เนื้อหาหลัก)
+   ============================================================ */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+}
+
+/* ส่วนหัว (Header) */
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+    background-color: rgba(13, 13, 13, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10;
+}
+.btn-toggle-sidebar {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-toggle-sidebar:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+.header-model-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+.header-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    background: var(--color-accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.header-model-badge {
+    font-size: var(--font-size-xs);
+    padding: 2px 8px;
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-accent-secondary);
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+}
+
+/* ============================================================
+   Chat Area (พื้นที่แชท)
+   ============================================================ */
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* หน้าจอต้อนรับ */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: var(--spacing-xl);
+    animation: fadeIn 0.6s ease;
+}
+.welcome-screen.hidden {
+    display: none;
+}
+.welcome-logo {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--spacing-lg);
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+.welcome-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
+}
+.welcome-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-2xl);
+    text-align: center;
+}
+.welcome-suggestions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    max-width: 640px;
+    width: 100%;
+}
+.suggestion-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    font-family: inherit;
+    line-height: 1.5;
+}
+.suggestion-card:hover {
+    background-color: var(--color-bg-tertiary);
+    border-color: var(--color-border-light);
+    color: var(--color-text-primary);
+    transform: translateY(-2px);
+}
+.suggestion-card svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* คอนเทนเนอร์ข้อความ */
+.messages-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 768px;
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    padding-bottom: var(--spacing-xl);
+}
+
+/* ============================================================
+   Messages (ข้อความ)
+   ============================================================ */
+.message {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) 0;
+    animation: messageSlideIn 0.3s ease;
+}
+.message + .message {
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* อวาตาร์ */
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+.message.user .message-avatar {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+.message.assistant .message-avatar {
+    background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+    color: white;
+}
+
+/* เนื้อหาข้อความ */
+.message-content {
+    flex: 1;
+    min-width: 0;
+}
+.message-role {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-primary);
+}
+.message-text {
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    color: var(--color-text-primary);
+    word-break: break-word;
+}
+.message-text p {
+    margin-bottom: var(--spacing-sm);
+}
+.message-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* การจัดรูปแบบข้อความ: Code Block */
+.message-text pre {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    overflow-x: auto;
+    position: relative;
+}
+.message-text code {
+    font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+    font-size: var(--font-size-sm);
+}
+.message-text :not(pre) > code {
+    background-color: var(--color-bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+/* ปุ่มคัดลอกโค้ด */
+.code-block-wrapper {
+    position: relative;
+    margin: var(--spacing-sm) 0;
+}
+.code-block-wrapper .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+}
+.code-block-wrapper pre {
+    margin: 0;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.btn-copy-code {
+    background: none;
+    border: none;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    font-size: var(--font-size-xs);
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+    font-family: inherit;
+}
+.btn-copy-code:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-hover);
+}
+
+/* Markdown Lists */
+.message-text ul,
+.message-text ol {
+    padding-left: var(--spacing-lg);
+    margin: var(--spacing-sm) 0;
+}
+.message-text li {
+    margin-bottom: var(--spacing-xs);
+}
+.message-text strong {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+.message-text em {
+    font-style: italic;
+}
+.message-text blockquote {
+    border-left: 3px solid var(--color-accent-primary);
+    padding-left: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    color: var(--color-text-secondary);
+}
+.message-text h1, .message-text h2, .message-text h3,
+.message-text h4, .message-text h5, .message-text h6 {
+    margin: var(--spacing-md) 0 var(--spacing-sm);
+    font-weight: 600;
+}
+.message-text h1 { font-size: 1.5rem; }
+.message-text h2 { font-size: 1.3rem; }
+.message-text h3 { font-size: 1.15rem; }
+.message-text table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--spacing-sm) 0;
+}
+.message-text th,
+.message-text td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    text-align: left;
+}
+.message-text th {
+    background-color: var(--color-bg-tertiary);
+    font-weight: 600;
+}
+.message-text hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: var(--spacing-md) 0;
+}
+
+/* Typing Indicator (ตัวบอกสถานะกำลังพิมพ์) */
+.typing-indicator {
+    display: inline-flex;
+    gap: 4px;
+    padding: var(--spacing-xs) 0;
+}
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-text-tertiary);
+    border-radius: 50%;
+    animation: typingBounce 1.4s ease-in-out infinite;
+}
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* ============================================================
+   Input Area (แถบพิมพ์ข้อความ)
+   ============================================================ */
+.input-area {
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+    background: linear-gradient(to top, var(--color-bg-primary) 60%, transparent);
+    position: relative;
+}
+.input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--spacing-sm);
+    max-width: 768px;
+    margin: 0 auto;
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.input-wrapper:focus-within {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+}
+.message-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    line-height: 1.5;
+    resize: none;
+    max-height: 200px;
+    padding: var(--spacing-sm) 0;
+    outline: none;
+}
+.message-input::placeholder {
+    color: var(--color-text-placeholder);
+}
+.btn-send,
+.btn-stop {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background-color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
+}
+.btn-send {
+    background: var(--color-accent-gradient);
+    color: white;
+}
+.btn-send:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn-send:not(:disabled):hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+.btn-stop {
+    background-color: #ef4444;
+    color: white;
+}
+.btn-stop:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+}
+.hidden {
+    display: none !important;
+}
+.input-disclaimer {
+    text-align: center;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+    margin-top: var(--spacing-sm);
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ============================================================
+   Error Message (ข้อความแจ้งเตือนข้อผิดพลาด)
+   ============================================================ */
+.error-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: #fca5a5;
+    font-size: var(--font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+.error-message svg {
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   Animations (แอนิเมชัน)
+   ============================================================ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes messageSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+}
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.4); }
+}
+
+/* คลาส cursor กระพริบสำหรับ streaming */
+.streaming-cursor::after {
+    content: '▍';
+    animation: blink 1s step-end infinite;
+    color: var(--color-accent-primary);
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* ============================================================
+   Responsive Design (รองรับหน้าจอขนาดต่างๆ)
+   ============================================================ */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 200;
+        box-shadow: var(--shadow-lg);
+    }
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+    .welcome-suggestions {
+        grid-template-columns: 1fr;
+    }
+    .welcome-title {
+        font-size: var(--font-size-xl);
+    }
+    .messages-container {
+        padding: var(--spacing-md);
+    }
+    .input-area {
+        padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+    }
+}
+
+/* Overlay สำหรับ Sidebar บนมือถือ */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 150;
+    backdrop-filter: blur(4px);
+}
+.sidebar-overlay.active {
+    display: block;
+}
